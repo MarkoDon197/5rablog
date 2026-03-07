@@ -1,73 +1,282 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html><html lang="sl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorldExplorer Travel Blog</title>
-<link rel="stylesheet" href="css/style.css">
-</head>
+<title>TravelBlog Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,sans-serif}
+body{background:#f4f7fb;color:#333}
 
-<body>
 
-<nav class="nav">
-<div class="logo">🌍 WorldExplorer</div>
-<div class="menu">
-<a href="index.html">Home</a>
-<a href="#destinations">Destinations</a>
-<a href="#blog">Blog</a>
-<a href="#contact">Contact</a>
+nav{background:#fff;padding:18px 40px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:10}
+nav a{margin-left:18px;text-decoration:none;color:#333;font-weight:500;cursor:pointer}
+
+
+header{padding:90px 30px;background:url("https://images.unsplash.com/photo-1469474968028-56623f02e42e") center/cover;color:white;text-align:center}
+header h1{font-size:48px;margin-bottom:10px}
+
+
+.container{max-width:1100px;margin:auto;padding:40px 20px}
+
+
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;margin-top:20px}
+
+
+.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.card img{width:100%;height:180px;object-fit:cover}
+.card-content{padding:20px}
+.card button{margin-top:10px;padding:8px 12px;border:none;border-radius:8px;background:#2d7ef7;color:white;cursor:pointer}
+
+
+.admin{display:none;margin-top:30px}
+
+
+.comments{margin-top:20px}
+.comment{background:#f1f3f7;padding:10px;border-radius:8px;margin-top:8px;font-size:14px}
+
+
+textarea,input{padding:10px;border-radius:8px;border:1px solid #ddd}
+
+
+form{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
+.modal-box{background:white;padding:25px;border-radius:12px;width:320px}
+
+
+footer{text-align:center;padding:30px;margin-top:60px;background:white;color:#666}
+</style></head><body><nav>
+<h2>✈️ TravelBlog Pro</h2>
+<div>
+<a onclick="scrollToId('home')">Home</a>
+<a onclick="scrollToId('blog')">Blog</a>
+<a onclick="openLogin()">Login</a>
 </div>
-</nav>
-
-<header class="hero">
-<h1>Explore the World</h1>
-<p>Travel guides, stories and inspiration</p>
-<a class="btn" href="#blog">Read Blog</a>
-</header>
-
-<section id="destinations" class="container">
-<h2>Popular Destinations</h2>
-<div class="grid">
-
-<div class="dest">
-<img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34">
-<h3>Paris</h3>
-</div>
-
-<div class="dest">
-<img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb">
-<h3>Lake Bled</h3>
-</div>
-
-<div class="dest">
-<img src="https://images.unsplash.com/photo-1529260830199-42c24126f198">
-<h3>Rome</h3>
-</div>
-
-</div>
-</section>
-
-<section id="blog" class="container">
-<h2>Latest Articles</h2>
-<div id="posts" class="grid"></div>
-</section>
-
-<section id="contact" class="container">
-<h2>Contact</h2>
-
-<form id="contactForm">
-<input placeholder="Name" required>
-<input type="email" placeholder="Email" required>
-<textarea placeholder="Message"></textarea>
-<button class="btn">Send</button>
+</nav><header id="home">
+<h1>Explore the World 🌍</h1>
+<p>Travel stories and guides</p>
+</header><div class="container"><section id="blog">
+<h2>Blog Articles</h2>
+<div id="posts" class="blog-grid"></div>
+</section><!-- COMMENTS --><div class="comments">
+<h3>Komentarji</h3>
+<form onsubmit="addComment(event)">
+<input id="commentName" placeholder="Ime" required>
+<textarea id="commentText" placeholder="Komentar" required></textarea>
+<button>Dodaj komentar</button>
 </form>
+<div id="commentList"></div>
+</div><!-- ADMIN PANEL --><div class="admin" id="adminPanel">
+<h2 style="margin-top:30px">Admin – Dodaj ali uredi blog</h2><form onsubmit="addOrUpdatePost(event)">
+<input id="postTitle" placeholder="Naslov" required><input type="file" id="postImageFile" accept="image/*"><textarea id="postText" placeholder="Besedilo" required></textarea><button>Save Post</button>
 
-</section>
 
-<footer>
-© 2026 WorldExplorer Travel Blog
-</footer>
+</form>
+</div></div><footer>© 2026 TravelBlog</footer><!-- LOGIN --><div class="modal" id="loginModal">
+<div class="modal-box">
+<h3>Admin Login</h3>
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+</div><script>
 
-<script src="js/app.js"></script>
-</body>
+
+let posts = JSON.parse(localStorage.getItem('posts')||'[]');
+let editingIndex = null;
+
+
+if(posts.length===0){
+posts=[
+{title:'Weekend in Paris',img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34',text:'Visit cafes and Eiffel tower'},
+{title:'Lake Bled Adventure',img:'https://images.unsplash.com/photo-1506744038136-46273834b3fb',text:'Row to the island church'}
+];
+}
+
+
+function savePosts(){
+localStorage.setItem('posts',JSON.stringify(posts));
+}
+
+
+const container=document.getElementById('posts');
+
+
+function renderPosts(){
+container.innerHTML='';
+
+
+posts.forEach((p,i)=>{
+
+
+let el=document.createElement('div');
+el.className='card';
+
+
+el.innerHTML=`
+<img src="${p.img}">
+<div class="card-content">
+<h3>${p.title}</h3>
+<p>${p.text}</p>
+<button onclick="editPost(${i})">Edit</button>
+<button onclick="deletePost(${i})">Delete</button>
+</div>
+`;
+
+
+container.appendChild(el);
+});
+}
+
+
+renderPosts();
+
+
+function addOrUpdatePost(e){
+e.preventDefault();
+
+
+let title=document.getElementById('postTitle').value;
+let text=document.getElementById('postText').value;
+let file=document.getElementById('postImageFile').files[0];
+
+
+if(file){
+let reader=new FileReader();
+reader.onload=function(){
+let img=reader.result;
+
+
+savePostData(title,text,img);
+}
+reader.readAsDataURL(file);
+}else{
+savePostData(title,text,posts[editingIndex]?.img);
+}
+}
+
+
+function savePostData(title,text,img){
+
+
+if(editingIndex===null){
+posts.unshift({title,img,text});
+}else{
+posts[editingIndex]={title,img,text};
+editingIndex=null;
+}
+
+
+savePosts();
+renderPosts();
+
+
+document.getElementById('postTitle').value='';
+document.getElementById('postText').value='';
+document.getElementById('postImageFile').value='';
+}
+
+
+function editPost(i){
+let p=posts[i];
+editingIndex=i;
+
+
+document.getElementById('postTitle').value=p.title;
+document.getElementById('postText').value=p.text;
+
+
+window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+
+
+function deletePost(i){
+if(confirm('Delete post?')){
+posts.splice(i,1);
+savePosts();
+renderPosts();
+}
+}
+
+
+/* COMMENTS */
+function addComment(e){
+e.preventDefault();
+
+
+let name=document.getElementById('commentName').value;
+let text=document.getElementById('commentText').value;
+
+
+let div=document.createElement('div');
+div.className='comment';
+div.innerHTML='<b>'+name+':</b> '+text;
+
+
+let comments=JSON.parse(localStorage.getItem('comments')||'[]');
+comments.unshift(div.innerHTML);
+localStorage.setItem('comments',JSON.stringify(comments));
+
+
+renderComments();
+
+
+e.target.reset();
+}
+
+
+function renderComments(){
+let list=document.getElementById('commentList');
+list.innerHTML='';
+
+
+let comments=JSON.parse(localStorage.getItem('comments')||'[]');
+
+
+comments.forEach(c=>{
+let div=document.createElement('div');
+div.className='comment';
+div.innerHTML=c;
+list.appendChild(div);
+});
+}
+
+
+renderComments();
+
+
+/* LOGIN */
+function openLogin(){
+document.getElementById('loginModal').style.display='flex';
+}
+
+
+function login(){
+let u=document.getElementById('username').value;
+let p=document.getElementById('password').value;
+
+
+if(u==='admin' && p==='travel123'){
+alert('Login successful');
+
+
+document.getElementById('loginModal').style.display='none';
+
+
+document.getElementById('adminPanel').style.display='block';
+
+
+}else{
+alert('Wrong login');
+}
+}
+
+
+function scrollToId(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+
+</script></body>
 </html>
