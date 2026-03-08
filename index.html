@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TravelBlog Pro v3</title>
+<title>5ratravels</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,sans-serif}
@@ -61,7 +61,7 @@ body.dark footer{background:#1e1e1e}
 <body>
 
 <nav>
-<div class="logo">✈️ TravelBlog</div>
+<div class="logo">✈️ 5ratravels</div>
 <div class="hamburger" onclick="toggleMenu()">☰</div>
 <div class="menu" id="menu">
 <a onclick="scrollToId('home')">Home</a>
@@ -111,36 +111,16 @@ body.dark footer{background:#1e1e1e}
 <button type="button" onclick="addImageFromURL()">Image URL</button>
 </div>
 <div id="editor" class="editor" contenteditable="true"></div>
-<div style="font-size:12px;color:#777">Tip: drag & drop images or hold Shift+drag to resize.</div>
 <button>Publish Post</button>
 </form>
 </div>
 
 </div>
 
-<footer>© 2026 TravelBlog</footer>
-
-<div class="post-modal" id="postModal">
-<div class="post-box" id="postContent"></div>
-</div>
-
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-<img id="lightboxImg">
-</div>
-
-<div class="modal" id="loginModal">
-<div class="modal-box">
-<h3>Admin Login</h3>
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-</div>
-</div>
+<footer>© 2026 5ratravels</footer>
 
 <script>
-// --- Data & Storage ---
 let posts = JSON.parse(localStorage.getItem('posts')||'[]');
-let comments = JSON.parse(localStorage.getItem('comments')||'{}');
 let page = 1;
 const perPage = 6;
 const isAdmin = localStorage.getItem('adminLogged')==='true';
@@ -159,159 +139,65 @@ likes:0
 
 if(isAdmin) document.getElementById('adminPanel').style.display='block';
 
-// --- Helpers ---
 function savePosts(){ localStorage.setItem('posts',JSON.stringify(posts)); }
-function saveComments(){ localStorage.setItem('comments',JSON.stringify(comments)); }
-function sanitizeHTML(str){ const div=document.createElement('div'); div.textContent=str; return div.innerHTML; }
 
-// --- Render Posts ---
-function renderPosts(list=posts){
+function renderPosts(){
 let start=(page-1)*perPage;
-let paginated=list.slice(start,start+perPage);
+let paginated=posts.slice(start,start+perPage);
 const postsDiv=document.getElementById('posts');
 postsDiv.innerHTML='';
-paginated.forEach((p,i)=>{
-  const card=document.createElement('div');
-  card.className='card';
-  card.onclick=()=>openPost(start+i);
-  card.innerHTML=`<img src="${p.images[0]}"><div class="card-content"><h3>${sanitizeHTML(p.title)}</h3><div class="meta">${p.date} • ${sanitizeHTML(p.category||'')}</div><p>${sanitizeHTML(p.text.substring(0,80))}...</p><div class="tags">${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div></div>`;
-  
-  if(isAdmin){
-    const delBtn=document.createElement('button');
-    delBtn.textContent='Delete';
-    delBtn.style.cssText='margin-top:8px;padding:4px 8px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px';
-    delBtn.onclick=(ev)=>{
-      ev.stopPropagation();
-      if(confirm('Are you sure you want to delete this post?')){
-        posts.splice(start+i,1);
-        savePosts();
-        renderPosts();
-      }
-    };
-    card.querySelector('.card-content').appendChild(delBtn);
-  }
 
-  postsDiv.appendChild(card);
+paginated.forEach((p,i)=>{
+const card=document.createElement('div');
+card.className='card';
+card.innerHTML=`<img src="${p.images[0]}"><div class="card-content"><h3>${p.title}</h3><div class="meta">${p.date} • ${p.category||''}</div><p>${p.text.substring(0,80)}...</p></div>`;
+postsDiv.appendChild(card);
 });
-renderPagination(list.length);
-renderTagFilters();
+
+renderPagination();
 }
 
-// --- Pagination ---
-function renderPagination(total){
+function renderPagination(){
 const pagination=document.getElementById('pagination');
 pagination.innerHTML='';
-const totalPages=Math.ceil(total/perPage);
+const totalPages=Math.ceil(posts.length/perPage);
+
 for(let i=1;i<=totalPages;i++){
-  const btn=document.createElement('button');
-  btn.textContent=i;
-  if(i===page) btn.style.background='#1a5cd1';
-  btn.onclick=()=>{ page=i; renderPosts(); };
-  pagination.appendChild(btn);
+const btn=document.createElement('button');
+btn.textContent=i;
+btn.onclick=()=>{page=i;renderPosts();};
+pagination.appendChild(btn);
 }
 }
 
-// --- Tag Filters ---
-function renderTagFilters(){
-const allTags=[...new Set(posts.flatMap(p=>p.tags))];
-const box=document.getElementById('tagFilters');
-box.innerHTML='';
-allTags.forEach(tag=>{
-  const b=document.createElement('button');
-  b.textContent='#'+tag;
-  b.onclick=()=>{ page=1; renderPosts(posts.filter(p=>p.tags.includes(tag))); };
-  box.appendChild(b);
-});
-}
-
-// --- Post Modal ---
-function openPost(i){
-const p=posts[i];
-const gallery=p.images.map(img=>`<img src="${img}" onclick="openLightbox('${img}')">`).join('');
-const postComments=(comments[i]||[]).map(c=>`<div class='comment'>${sanitizeHTML(c)}</div>`).join('');
-document.getElementById('postContent').innerHTML=`<h1>${sanitizeHTML(p.title)}</h1><div class='meta'>${p.date} • ${sanitizeHTML(p.category||'')}</div><img src='${p.images[0]}' style='width:100%;border-radius:10px;margin:20px 0'><p>${p.text}</p><div class='gallery'>${gallery}</div><div class='tags'>${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div><div class='post-comments'><h3>Comments</h3><form onsubmit="addComment(event,${i})"><input id='cname' placeholder='Name' required><input id='ctext' placeholder='Comment' required><button>Add comment</button></form>${postComments}</div><button onclick="closePost()">Close</button>`;
-document.getElementById('postModal').style.display='block';
-}
-
-// --- Comments ---
-function addComment(e,i){ e.preventDefault(); const name=document.getElementById('cname').value; const text=document.getElementById('ctext').value; if(!comments[i]) comments[i]=[]; comments[i].push(`${name}: ${text}`); saveComments(); openPost(i); }
-function closePost(){ document.getElementById('postModal').style.display='none'; }
-
-// --- Lightbox ---
-function openLightbox(src){ const lb=document.getElementById('lightbox'); lb.style.display='flex'; document.getElementById('lightboxImg').src=src; }
-function closeLightbox(){ document.getElementById('lightbox').style.display='none'; }
-
-// --- Editor Toolbar & Add Post ---
-const editor=document.getElementById('editor');
-function format(cmd,value=null){ document.execCommand(cmd,false,value); }
-function addLink(){ const url=prompt('Enter URL'); if(url) document.execCommand('createLink',false,url); }
-function addImageFromURL(){ const url=prompt('Enter image URL'); if(!url) return; const img=document.createElement('img'); img.src=url; makeImageInteractive(img); editor.appendChild(img); }
-
-function makeImageInteractive(img){
-img.style.maxWidth='100%'; img.style.borderRadius='10px'; img.style.margin='10px 0'; img.style.cursor='move'; img.draggable=true;
-img.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/plain','drag-image'); window.__draggedImage=img; });
-img.addEventListener('dragover',e=>e.preventDefault());
-img.addEventListener('drop',e=>{ e.preventDefault(); const dragged=window.__draggedImage; if(dragged&&dragged!==img) img.parentNode.insertBefore(dragged,img); });
-img.addEventListener('mousedown',e=>{ if(!e.shiftKey) return; e.preventDefault(); const startX=e.clientX,startY=e.clientY,startWidth=img.offsetWidth,startHeight=img.offsetHeight; function onMove(ev){ const dx=ev.clientX-startX,dy=ev.clientY-startY; img.style.width=Math.max(50,startWidth+dx)+'px'; img.style.height=Math.max(50,startHeight+dy)+'px'; } function onUp(){ window.removeEventListener('mousemove',onMove); window.removeEventListener('mouseup',onUp); } window.addEventListener('mousemove',onMove); window.addEventListener('mouseup',onUp); });
-}
-
-// Drag & Drop in Editor
-editor.addEventListener('dragover',e=>e.preventDefault());
-editor.addEventListener('drop',e=>{
-e.preventDefault();
-const files=e.dataTransfer.files;
-for(const file of files){
-if(!file.type.startsWith('image/')) continue;
-const reader=new FileReader();
-reader.onload=evt=>{ const img=document.createElement('img'); img.src=evt.target.result; makeImageInteractive(img); editor.appendChild(img); };
-reader.readAsDataURL(file);
-}
-});
-
-// --- Add Post ---
 function addPost(e){
 e.preventDefault();
+
 const title=document.getElementById('postTitle').value;
 const category=document.getElementById('postCategory').value;
-const tags=document.getElementById('postTags').value.split(',').map(t=>t.trim()).filter(Boolean);
-const text=editor.innerHTML;
-const files=document.getElementById('postImages').files;
-const images=[];
-if(files.length===0) saveNewPost();
-for(const file of files){
-if(!file.type.startsWith('image/')) continue;
-const reader=new FileReader();
-reader.onload=()=>{
-images.push(reader.result);
-if(images.length===files.length) saveNewPost();
-};
-reader.readAsDataURL(file);
-}
-function saveNewPost(){ posts.unshift({title,category,tags,text,images,date:new Date().toLocaleDateString(),likes:0}); savePosts(); renderPosts(); e.target.reset(); editor.innerHTML=''; }
-}
+const tags=document.getElementById('postTags').value.split(',').map(t=>t.trim());
+const text=document.getElementById('editor').innerHTML;
 
-// --- Search ---
-function searchPosts(q){ q=q.toLowerCase(); renderPosts(posts.filter(p=>p.title.toLowerCase().includes(q)||p.tags.join(' ').toLowerCase().includes(q))); }
+posts.unshift({
+title,category,tags,text,
+images:["https://images.unsplash.com/photo-1502602898657-3e91760cbb34"],
+date:new Date().toLocaleDateString(),
+likes:0
+});
 
-// --- Dark Mode ---
-function toggleDark(){ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); }
-if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark');
-
-// --- Admin Login ---
-function openLogin(){ document.getElementById('loginModal').style.display='flex'; }
-function login(){ if(document.getElementById('username').value==='admin' && document.getElementById('password').value==='travel123'){ localStorage.setItem('adminLogged','true'); location.reload(); }else alert('Wrong login'); }
-function logout(){ localStorage.removeItem('adminLogged'); location.reload(); }
-
-// --- Navigation & Menu ---
-function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
-function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
-
-// --- Initial Render ---
+savePosts();
 renderPosts();
-window.onclick=e=>{
-if(e.target===document.getElementById('loginModal')) document.getElementById('loginModal').style.display='none';
-if(e.target===document.getElementById('postModal')) document.getElementById('postModal').style.display='none';
-};
+e.target.reset();
+document.getElementById('editor').innerHTML='';
+}
+
+function toggleMenu(){document.getElementById('menu').classList.toggle('open');}
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function toggleDark(){document.body.classList.toggle('dark');}
+function openLogin(){alert("Login system available in full version.");}
+function logout(){localStorage.removeItem('adminLogged');location.reload();}
+
+renderPosts();
 </script>
 
 </body>
