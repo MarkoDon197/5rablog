@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sl">
 <head>
 <meta charset="UTF-8" />
@@ -9,73 +9,51 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,sans-serif}
 body{background:#f4f7fb;color:#333;transition:.3s}
 body.dark{background:#121212;color:#eee}
-
 nav{background:white;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:10}
 body.dark nav{background:#1e1e1e}
-
 .logo{font-weight:600}
-
 .menu{display:flex;gap:16px}
 .menu a{cursor:pointer;text-decoration:none;color:inherit}
-
 .hamburger{display:none;font-size:22px;cursor:pointer}
-
 @media(max-width:700px){
 .menu{display:none;flex-direction:column;position:absolute;top:60px;right:20px;background:white;padding:15px;border-radius:10px}
 .menu.open{display:flex}
 .hamburger{display:block}
 }
-
 header{padding:90px 20px;background:url("https://images.unsplash.com/photo-1469474968028-56623f02e42e") center/cover;color:white;text-align:center}
 header h1{font-size:44px}
-
 .container{max-width:1100px;margin:auto;padding:40px 20px}
-
 .search input{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin:20px 0}
-
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
 .filters button{padding:6px 10px;border:none;border-radius:8px;background:#ddd;cursor:pointer}
-
 .blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px}
-
 .card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.08);cursor:pointer}
 .card img{width:100%;height:180px;object-fit:cover}
 body.dark .card{background:#1f1f1f}
-
 .card-content{padding:20px}
 .meta{font-size:12px;color:#888;margin-bottom:6px}
 .tags{font-size:12px;color:#2d7ef7;margin-top:6px}
-
 .pagination{display:flex;justify-content:center;gap:10px;margin-top:30px}
 .pagination button{padding:6px 10px;border:none;border-radius:8px;background:#2d7ef7;color:white;cursor:pointer}
-
 .post-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;overflow:auto;padding:40px}
 .post-box{max-width:900px;margin:auto;background:white;border-radius:14px;padding:30px}
 body.dark .post-box{background:#1f1f1f}
-
 .gallery{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
 .gallery img{width:100px;height:100px;object-fit:cover;border-radius:6px;cursor:pointer}
-
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center}
 .lightbox img{max-width:90%;max-height:90%}
-
 .post-comments{margin-top:30px}
 .comment{background:#f1f3f7;padding:10px;border-radius:8px;margin-top:8px}
 body.dark .comment{background:#2a2a2a}
-
 .admin{display:none;margin-top:40px}
 form{display:flex;flex-direction:column;gap:10px}
 input,textarea{padding:10px;border-radius:8px;border:1px solid #ddd}
-
 .toolbar{display:flex;gap:6px;flex-wrap:wrap}
 .toolbar button{padding:6px 10px;border:none;border-radius:6px;background:#eee;cursor:pointer}
-
 .editor{min-height:160px;border:1px solid #ddd;border-radius:8px;padding:10px;background:white}
 body.dark .editor{background:#1f1f1f;color:#eee}
-
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
 .modal-box{background:white;padding:25px;border-radius:12px;width:320px}
-
 footer{text-align:center;padding:30px;margin-top:60px;background:white}
 body.dark footer{background:#1e1e1e}
 </style>
@@ -130,17 +108,10 @@ body.dark footer{background:#1e1e1e}
 <button type="button" onclick="format('insertOrderedList')">1. List</button>
 <button type="button" onclick="format('formatBlock','h2')">H2</button>
 <button type="button" onclick="addLink()">Link</button>
+<button type="button" onclick="addImageFromURL()">Image URL</button>
 </div>
-<div class="toolbar">
-<button type="button" onclick="addBlock('p')">Text</button>
-<button type="button" onclick="addBlock('h2')">Heading</button>
-<button type="button" onclick="addBlock('ul')">List</button>
-<button type="button" onclick="addImageBlock()">Image</button>
-<button type="button" onclick="addBlock('quote')">Quote</button>
-</div>
-<div id="editor" class="editor"></div>
-<div style="font-size:12px;color:#777">Tip: drag & drop images directly into the editor.</div>
-<input type="hidden" id="postText">
+<div id="editor" class="editor" contenteditable="true"></div>
+<div style="font-size:12px;color:#777">Tip: drag & drop images or hold Shift+drag to resize.</div>
 <button>Publish Post</button>
 </form>
 </div>
@@ -167,12 +138,12 @@ body.dark footer{background:#1e1e1e}
 </div>
 
 <script>
-
-let posts=JSON.parse(localStorage.getItem('posts')||'[]')
-let comments=JSON.parse(localStorage.getItem('comments')||'{}')
-let page=1
-let perPage=6
-let isAdmin=localStorage.getItem('adminLogged')==='true'
+// --- Data & Storage ---
+let posts = JSON.parse(localStorage.getItem('posts')||'[]');
+let comments = JSON.parse(localStorage.getItem('comments')||'{}');
+let page = 1;
+const perPage = 6;
+const isAdmin = localStorage.getItem('adminLogged')==='true';
 
 if(posts.length===0){
 posts=[{
@@ -181,328 +152,150 @@ category:'Europe',
 tags:['city','food'],
 images:['https://images.unsplash.com/photo-1502602898657-3e91760cbb34'],
 text:'Full guide to exploring Paris including cafes, museums and walking tours around the Eiffel tower.',
-date:new Date().toLocaleDateString(),likes:0
-}]
+date:new Date().toLocaleDateString(),
+likes:0
+}];
 }
 
-if(isAdmin) adminPanel.style.display='block'
+if(isAdmin) document.getElementById('adminPanel').style.display='block';
 
-function save(){localStorage.setItem('posts',JSON.stringify(posts))}
+// --- Helpers ---
+function savePosts(){ localStorage.setItem('posts',JSON.stringify(posts)); }
+function saveComments(){ localStorage.setItem('comments',JSON.stringify(comments)); }
+function sanitizeHTML(str){ const div=document.createElement('div'); div.textContent=str; return div.innerHTML; }
 
+// --- Render Posts ---
 function renderPosts(list=posts){
-let start=(page-1)*perPage
-let paginated=list.slice(start,start+perPage)
-
-postsDiv=document.getElementById('posts')
-postsDiv.innerHTML=''
-
+let start=(page-1)*perPage;
+let paginated=list.slice(start,start+perPage);
+const postsDiv=document.getElementById('posts');
+postsDiv.innerHTML='';
 paginated.forEach((p,i)=>{
-let card=document.createElement('div')
-card.className='card'
-card.onclick=()=>openPost(start+i)
-
-card.innerHTML=`
-<img src="${p.images[0]}">
-<div class="card-content">
-<h3>${p.title}</h3>
-<div class="meta">${p.date} • ${p.category||''}</div>
-<p>${p.text.substring(0,80)}...</p>
-<div class="tags">${p.tags.map(t=>'#'+t).join(' ')}</div>
-</div>`
-
-postsDiv.appendChild(card)
-})
-
-renderPagination(list.length)
-renderTagFilters()
+  const card=document.createElement('div');
+  card.className='card';
+  card.onclick=()=>openPost(start+i);
+  card.innerHTML=`<img src="${p.images[0]}"><div class="card-content"><h3>${sanitizeHTML(p.title)}</h3><div class="meta">${p.date} • ${sanitizeHTML(p.category||'')}</div><p>${sanitizeHTML(p.text.substring(0,80))}...</p><div class="tags">${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div></div>`;
+  postsDiv.appendChild(card);
+});
+renderPagination(list.length);
+renderTagFilters();
 }
 
+// --- Pagination ---
 function renderPagination(total){
-pagination.innerHTML=''
-let pages=Math.ceil(total/perPage)
-
-for(let i=1;i<=pages;i++){
-let btn=document.createElement('button')
-btn.textContent=i
-btn.onclick=()=>{page=i;renderPosts()
-
-function addBlock(type){
-let block
-
-if(type==='p'){
-block=document.createElement('p')
-block.contentEditable=true
-block.innerText='Write text...'
-}
-
-if(type==='h2'){
-block=document.createElement('h2')
-block.contentEditable=true
-block.innerText='Heading'
-}
-
-if(type==='ul'){
-block=document.createElement('ul')
-let li=document.createElement('li')
-li.contentEditable=true
-li.innerText='List item'
-block.appendChild(li)
-}
-
-if(type==='quote'){
-block=document.createElement('blockquote')
-block.contentEditable=true
-block.innerText='Quote'
-block.style.borderLeft='4px solid #ccc'
-block.style.paddingLeft='10px'
-}
-
-block.draggable=true
-block.addEventListener('dragstart',()=>window.__draggedBlock=block)
-block.addEventListener('dragover',e=>e.preventDefault())
-block.addEventListener('drop',e=>{
- e.preventDefault()
- let dragged=window.__draggedBlock
- if(dragged && dragged!==block){
-  block.parentNode.insertBefore(dragged,block)
- }
-})
-
-editor.appendChild(block)
-}
-
-function addImageBlock(){
-let input=document.createElement('input')
-input.type='file'
-input.accept='image/*'
-
-input.onchange=()=>{
-let file=input.files[0]
-let reader=new FileReader()
-reader.onload=e=>{
-let img=document.createElement('img')
-img.src=e.target.result
-img.style.maxWidth='100%'
-img.style.display='block'
-img.style.margin='10px 0'
-img.style.resize='both'
-img.style.overflow='auto'
-
-let wrapper=document.createElement('div')
-wrapper.appendChild(img)
-wrapper.draggable=true
-
-wrapper.addEventListener('dragstart',()=>window.__draggedBlock=wrapper)
-wrapper.addEventListener('dragover',e=>e.preventDefault())
-wrapper.addEventListener('drop',e=>{
- e.preventDefault()
- let dragged=window.__draggedBlock
- if(dragged && dragged!==wrapper){
-  wrapper.parentNode.insertBefore(dragged,wrapper)
- }
-})
-
-editor.appendChild(wrapper)
-}
-reader.readAsDataURL(file)
-}
-input.click()
-}
-
-function format(){
-let url=prompt('Enter URL')
-if(url) document.execCommand('createLink',false,url)
-}
-
-function handleDragOver(e){
-e.preventDefault()
-}
-
-function handleDrop(e){
-e.preventDefault()
-
-let files=e.dataTransfer.files
-for(let file of files){
-if(!file.type.startsWith('image/')) continue
-
-let reader=new FileReader()
-reader.onload=function(evt){
-let img=document.createElement('img')
-img.src=evt.target.result
-img.style.maxWidth='100%'
-img.style.display='block'
-img.style.resize='both'
-img.style.overflow='auto'
-img.style.cursor='nwse-resize'
-img.style.margin='10px 0'
-img.draggable=true
-
-img.addEventListener('dragstart',e=>{
-e.dataTransfer.setData('text/plain','drag-image')
-window.__draggedImage=img
-})
-
-img.addEventListener('dragover',e=>{
-e.preventDefault()
-})
-
-img.addEventListener('drop',e=>{
-e.preventDefault()
-let dragged=window.__draggedImage
-if(dragged && dragged!==img){
-img.parentNode.insertBefore(dragged,img)
-}
-})
-img.style.borderRadius='10px'
-img.style.margin='10px 0'
-
-let sel=window.getSelection()
-if(sel.rangeCount>0){
-let range=sel.getRangeAt(0)
-range.insertNode(img)
-range.collapse(false)
-}else{
-editor.appendChild(img)
-}
-}
-reader.readAsDataURL(file)
-}
-}}
-pagination.appendChild(btn)
+const pagination=document.getElementById('pagination');
+pagination.innerHTML='';
+const totalPages=Math.ceil(total/perPage);
+for(let i=1;i<=totalPages;i++){
+  const btn=document.createElement('button');
+  btn.textContent=i;
+  if(i===page) btn.style.background='#1a5cd1';
+  btn.onclick=()=>{ page=i; renderPosts(); };
+  pagination.appendChild(btn);
 }
 }
 
-function openPost(i){
-let p=posts[i]
-
-let gallery=p.images.map(img=>`<img src="${img}" onclick="openLightbox('${img}')">`).join('')
-
-let postComments=(comments[i]||[]).map(c=>`<div class='comment'>${c}</div>`).join('')
-
-postContent.innerHTML=`
-<h1>${p.title}</h1>
-<div class='meta'>${p.date} • ${p.category||''}</div>
-<img src='${p.images[0]}' style='width:100%;border-radius:10px;margin:20px 0'>
-<p>${p.text}</p>
-<div class='gallery'>${gallery}</div>
-<div class='tags'>${p.tags.map(t=>'#'+t).join(' ')}</div>
-
-<div class='post-comments'>
-<h3>Comments</h3>
-<form onsubmit="addComment(event,${i})">
-<input id='cname' placeholder='Name' required>
-<input id='ctext' placeholder='Comment' required>
-<button>Add comment</button>
-</form>
-${postComments}
-</div>
-
-<button onclick="closePost()">Close</button>
-`
-
-postModal.style.display='block'
-}
-
-function closePost(){postModal.style.display='none'}
-
-function openLightbox(src){
-lightbox.style.display='flex'
-lightboxImg.src=src
-}
-
-function closeLightbox(){lightbox.style.display='none'}
-
-function addComment(e,i){
-e.preventDefault()
-let name=document.getElementById('cname').value
-let text=document.getElementById('ctext').value
-
-if(!comments[i]) comments[i]=[]
-comments[i].push(name+': '+text)
-
-localStorage.setItem('comments',JSON.stringify(comments))
-openPost(i)
-}
-
-function addPost(e){
-e.preventDefault()
-
-let title=postTitle.value
-let category=postCategory.value
-let tags=postTags.value.split(',').map(t=>t.trim()).filter(Boolean)
-let text=document.getElementById('editor').innerHTML
-let files=postImages.files
-
-let images=[]
-let loaded=0
-
-if(files.length===0) saveNewPost()
-
-for(let file of files){
-let r=new FileReader()
-r.onload=()=>{
-images.push(r.result)
-loaded++
-if(loaded===files.length) saveNewPost()
-}
-r.readAsDataURL(file)
-}
-
-function saveNewPost(){
-posts.unshift({title,category,tags,text,images,date:new Date().toLocaleDateString(),likes:0})
-save()
-renderPosts()
-e.target.reset();document.getElementById('editor').innerHTML=''
-}
-}
-
-function searchPosts(q){
-q=q.toLowerCase()
-renderPosts(posts.filter(p=>p.title.toLowerCase().includes(q)||p.tags.join(' ').toLowerCase().includes(q)))
-}
-
+// --- Tag Filters ---
 function renderTagFilters(){
-let all=[...new Set(posts.flatMap(p=>p.tags))]
-let box=document.getElementById('tagFilters')
-box.innerHTML=''
-
-all.forEach(tag=>{
-let b=document.createElement('button')
-b.textContent='#'+tag
-b.onclick=()=>renderPosts(posts.filter(p=>p.tags.includes(tag)))
-box.appendChild(b)
-})
+const allTags=[...new Set(posts.flatMap(p=>p.tags))];
+const box=document.getElementById('tagFilters');
+box.innerHTML='';
+allTags.forEach(tag=>{
+  const b=document.createElement('button');
+  b.textContent='#'+tag;
+  b.onclick=()=>renderPosts(posts.filter(p=>p.tags.includes(tag)));
+  box.appendChild(b);
+});
 }
 
-function toggleMenu(){menu.classList.toggle('open')}
-
-function toggleDark(){
-document.body.classList.toggle('dark')
-localStorage.setItem('darkMode',document.body.classList.contains('dark'))
+// --- Post Modal ---
+function openPost(i){
+const p=posts[i];
+const gallery=p.images.map(img=>`<img src="${img}" onclick="openLightbox('${img}')">`).join('');
+const postComments=(comments[i]||[]).map(c=>`<div class='comment'>${sanitizeHTML(c)}</div>`).join('');
+document.getElementById('postContent').innerHTML=`<h1>${sanitizeHTML(p.title)}</h1><div class='meta'>${p.date} • ${sanitizeHTML(p.category||'')}</div><img src='${p.images[0]}' style='width:100%;border-radius:10px;margin:20px 0'><p>${p.text}</p><div class='gallery'>${gallery}</div><div class='tags'>${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div><div class='post-comments'><h3>Comments</h3><form onsubmit="addComment(event,${i})"><input id='cname' placeholder='Name' required><input id='ctext' placeholder='Comment' required><button>Add comment</button></form>${postComments}</div><button onclick="closePost()">Close</button>`;
+document.getElementById('postModal').style.display='block';
 }
 
-if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark')
+// --- Comments ---
+function addComment(e,i){ e.preventDefault(); const name=document.getElementById('cname').value; const text=document.getElementById('ctext').value; if(!comments[i]) comments[i]=[]; comments[i].push(`${name}: ${text}`); saveComments(); openPost(i); }
+function closePost(){ document.getElementById('postModal').style.display='none'; }
 
-function openLogin(){loginModal.style.display='flex'}
+// --- Lightbox ---
+function openLightbox(src){ const lb=document.getElementById('lightbox'); lb.style.display='flex'; document.getElementById('lightboxImg').src=src; }
+function closeLightbox(){ document.getElementById('lightbox').style.display='none'; }
 
-function login(){
-if(username.value==='admin'&&password.value==='travel123'){
-localStorage.setItem('adminLogged','true')
-location.reload()
-}else alert('Wrong login')
+// --- Editor Toolbar & Add Post ---
+const editor=document.getElementById('editor');
+function format(cmd,value=null){ document.execCommand(cmd,false,value); }
+function addLink(){ const url=prompt('Enter URL'); if(url) document.execCommand('createLink',false,url); }
+function addImageFromURL(){ const url=prompt('Enter image URL'); if(!url) return; const img=document.createElement('img'); img.src=url; makeImageInteractive(img); editor.appendChild(img); }
+
+function makeImageInteractive(img){
+img.style.maxWidth='100%'; img.style.borderRadius='10px'; img.style.margin='10px 0'; img.style.cursor='move'; img.draggable=true;
+img.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/plain','drag-image'); window.__draggedImage=img; });
+img.addEventListener('dragover',e=>e.preventDefault());
+img.addEventListener('drop',e=>{ e.preventDefault(); const dragged=window.__draggedImage; if(dragged&&dragged!==img) img.parentNode.insertBefore(dragged,img); });
+img.addEventListener('mousedown',e=>{ if(!e.shiftKey) return; e.preventDefault(); const startX=e.clientX,startY=e.clientY,startWidth=img.offsetWidth,startHeight=img.offsetHeight; function onMove(ev){ const dx=ev.clientX-startX,dy=ev.clientY-startY; img.style.width=Math.max(50,startWidth+dx)+'px'; img.style.height=Math.max(50,startHeight+dy)+'px'; } function onUp(){ window.removeEventListener('mousemove',onMove); window.removeEventListener('mouseup',onUp); } window.addEventListener('mousemove',onMove); window.addEventListener('mouseup',onUp); });
 }
 
-function logout(){localStorage.removeItem('adminLogged');location.reload()}
+// Drag & Drop in Editor
+editor.addEventListener('dragover',e=>e.preventDefault());
+editor.addEventListener('drop',e=>{
+e.preventDefault();
+const files=e.dataTransfer.files;
+for(const file of files){
+if(!file.type.startsWith('image/')) continue;
+const reader=new FileReader();
+reader.onload=evt=>{ const img=document.createElement('img'); img.src=evt.target.result; makeImageInteractive(img); editor.appendChild(img); };
+reader.readAsDataURL(file);
+}
+});
 
-function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+// --- Add Post ---
+function addPost(e){
+e.preventDefault();
+const title=document.getElementById('postTitle').value;
+const category=document.getElementById('postCategory').value;
+const tags=document.getElementById('postTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+const text=editor.innerHTML;
+const files=document.getElementById('postImages').files;
+const images=[];
+if(files.length===0) saveNewPost();
+for(const file of files){
+if(!file.type.startsWith('image/')) continue;
+const reader=new FileReader();
+reader.onload=()=>{
+images.push(reader.result);
+if(images.length===files.length) saveNewPost();
+};
+reader.readAsDataURL(file);
+}
+function saveNewPost(){ posts.unshift({title,category,tags,text,images,date:new Date().toLocaleDateString(),likes:0}); savePosts(); renderPosts(); e.target.reset(); editor.innerHTML=''; }
+}
 
-renderPosts()
+// --- Search ---
+function searchPosts(q){ q=q.toLowerCase(); renderPosts(posts.filter(p=>p.title.toLowerCase().includes(q)||p.tags.join(' ').toLowerCase().includes(q))); }
 
+// --- Dark Mode ---
+function toggleDark(){ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); }
+if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark');
+
+// --- Admin Login ---
+function openLogin(){ document.getElementById('loginModal').style.display='flex'; }
+function login(){ if(document.getElementById('username').value==='admin' && document.getElementById('password').value==='travel123'){ localStorage.setItem('adminLogged','true'); location.reload(); }else alert('Wrong login'); }
+function logout(){ localStorage.removeItem('adminLogged'); location.reload(); }
+
+// --- Navigation & Menu ---
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// --- Initial Render ---
+renderPosts();
 window.onclick=e=>{
-if(e.target===loginModal) loginModal.style.display='none'
-if(e.target===postModal) postModal.style.display='none'
-}
-
+if(e.target===document.getElementById('loginModal')) document.getElementById('loginModal').style.display='none';
+if(e.target===document.getElementById('postModal')) document.getElementById('postModal').style.display='none';
+};
 </script>
 
 </body>
