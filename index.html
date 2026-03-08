@@ -175,6 +175,22 @@ paginated.forEach((p,i)=>{
   card.className='card';
   card.onclick=()=>openPost(start+i);
   card.innerHTML=`<img src="${p.images[0]}"><div class="card-content"><h3>${sanitizeHTML(p.title)}</h3><div class="meta">${p.date} • ${sanitizeHTML(p.category||'')}</div><p>${sanitizeHTML(p.text.substring(0,80))}...</p><div class="tags">${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div></div>`;
+  
+  if(isAdmin){
+    const delBtn=document.createElement('button');
+    delBtn.textContent='Delete';
+    delBtn.style.cssText='margin-top:8px;padding:4px 8px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px';
+    delBtn.onclick=(ev)=>{
+      ev.stopPropagation();
+      if(confirm('Are you sure you want to delete this post?')){
+        posts.splice(start+i,1);
+        savePosts();
+        renderPosts();
+      }
+    };
+    card.querySelector('.card-content').appendChild(delBtn);
+  }
+
   postsDiv.appendChild(card);
 });
 renderPagination(list.length);
@@ -203,7 +219,7 @@ box.innerHTML='';
 allTags.forEach(tag=>{
   const b=document.createElement('button');
   b.textContent='#'+tag;
-  b.onclick=()=>renderPosts(posts.filter(p=>p.tags.includes(tag)));
+  b.onclick=()=>{ page=1; renderPosts(posts.filter(p=>p.tags.includes(tag))); };
   box.appendChild(b);
 });
 }
