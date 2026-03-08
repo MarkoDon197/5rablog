@@ -1,0 +1,9 @@
+
+{
+"name":"TravelBlog Pro",
+"short_name":"TravelBlog",
+"start_url":"index.html",
+"display":"standalone",
+"background_color":"#ffffff",
+"theme_color":"#2d7ef7"
+}
