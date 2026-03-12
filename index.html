@@ -1,200 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="sl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>5ratravels</title>
-<meta name="description" content="5ratravels - travel stories, guides and adventures around the world.">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TravelBlog Pro v3</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,sans-serif}
 body{background:#f4f7fb;color:#333;transition:.3s}
 body.dark{background:#121212;color:#eee}
-
 nav{background:white;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:10}
 body.dark nav{background:#1e1e1e}
-.logo{font-weight:600;font-size:18px}
-
+.logo{font-weight:600}
 .menu{display:flex;gap:16px}
 .menu a{cursor:pointer;text-decoration:none;color:inherit}
-
 .hamburger{display:none;font-size:22px;cursor:pointer}
-
 @media(max-width:700px){
 .menu{display:none;flex-direction:column;position:absolute;top:60px;right:20px;background:white;padding:15px;border-radius:10px}
 .menu.open{display:flex}
-body.dark .menu{background:#1e1e1e}
 .hamburger{display:block}
 }
-
-header{
-padding:90px 20px;
-background:url("https://images.unsplash.com/photo-1469474968028-56623f02e42e") center/cover;
-color:white;
-text-align:center
-}
-
+header{padding:90px 20px;background:url("https://images.unsplash.com/photo-1469474968028-56623f02e42e") center/cover;color:white;text-align:center}
 header h1{font-size:44px}
-
 .container{max-width:1100px;margin:auto;padding:40px 20px}
-
-.search input{
-width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ddd;
-margin:20px 0
-}
-
+.search input{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin:20px 0}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-
-.filters button{
-padding:6px 10px;
-border:none;
-border-radius:8px;
-background:#ddd;
-cursor:pointer
-}
-
-.blog-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:25px
-}
-
-.card{
-background:white;
-border-radius:14px;
-overflow:hidden;
-box-shadow:0 6px 18px rgba(0,0,0,.08);
-cursor:pointer
-}
-
+.filters button{padding:6px 10px;border:none;border-radius:8px;background:#ddd;cursor:pointer}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px}
+.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.08);cursor:pointer}
+.card img{width:100%;height:180px;object-fit:cover}
 body.dark .card{background:#1f1f1f}
-
-.card img{
-width:100%;
-height:180px;
-object-fit:cover
-}
-
 .card-content{padding:20px}
-
 .meta{font-size:12px;color:#888;margin-bottom:6px}
-
 .tags{font-size:12px;color:#2d7ef7;margin-top:6px}
-
-.pagination{
-display:flex;
-justify-content:center;
-gap:10px;
-margin-top:30px
-}
-
-.pagination button{
-padding:6px 10px;
-border:none;
-border-radius:8px;
-background:#2d7ef7;
-color:white;
-cursor:pointer
-}
-
-.post-modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.7);
-display:none;
-overflow:auto;
-padding:40px
-}
-
-.post-box{
-max-width:900px;
-margin:auto;
-background:white;
-border-radius:14px;
-padding:30px
-}
-
+.pagination{display:flex;justify-content:center;gap:10px;margin-top:30px}
+.pagination button{padding:6px 10px;border:none;border-radius:8px;background:#2d7ef7;color:white;cursor:pointer}
+.post-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;overflow:auto;padding:40px}
+.post-box{max-width:900px;margin:auto;background:white;border-radius:14px;padding:30px}
 body.dark .post-box{background:#1f1f1f}
-
-.gallery{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:15px
-}
-
-.gallery img{
-width:100px;
-height:100px;
-object-fit:cover;
-border-radius:6px;
-cursor:pointer
-}
-
-.lightbox{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.9);
-display:none;
-align-items:center;
-justify-content:center
-}
-
+.gallery{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.gallery img{width:100px;height:100px;object-fit:cover;border-radius:6px;cursor:pointer}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center}
 .lightbox img{max-width:90%;max-height:90%}
-
 .post-comments{margin-top:30px}
-
-.comment{
-background:#f1f3f7;
-padding:10px;
-border-radius:8px;
-margin-top:8px
-}
-
+.comment{background:#f1f3f7;padding:10px;border-radius:8px;margin-top:8px}
 body.dark .comment{background:#2a2a2a}
-
 .admin{display:none;margin-top:40px}
-
 form{display:flex;flex-direction:column;gap:10px}
-
-input,textarea{
-padding:10px;
-border-radius:8px;
-border:1px solid #ddd
-}
-
-.editor{
-min-height:160px;
-border:1px solid #ddd;
-border-radius:8px;
-padding:10px;
-background:white
-}
-
+input,textarea{padding:10px;border-radius:8px;border:1px solid #ddd}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.toolbar button{padding:6px 10px;border:none;border-radius:6px;background:#eee;cursor:pointer}
+.editor{min-height:160px;border:1px solid #ddd;border-radius:8px;padding:10px;background:white}
 body.dark .editor{background:#1f1f1f;color:#eee}
-
-footer{
-text-align:center;
-padding:30px;
-margin-top:60px;
-background:white
-}
-
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center}
+.modal-box{background:white;padding:25px;border-radius:12px;width:320px}
+footer{text-align:center;padding:30px;margin-top:60px;background:white}
 body.dark footer{background:#1e1e1e}
 </style>
 </head>
-
 <body>
 
 <nav>
-<div class="logo">✈️ 5ratravels</div>
-
+<div class="logo">✈️ TravelBlog</div>
 <div class="hamburger" onclick="toggleMenu()">☰</div>
-
 <div class="menu" id="menu">
 <a onclick="scrollToId('home')">Home</a>
 <a onclick="scrollToId('blog')">Blog</a>
@@ -206,13 +74,12 @@ body.dark footer{background:#1e1e1e}
 
 <header id="home">
 <h1>Explore the World 🌍</h1>
-<p>Stories and travel guides</p>
+<p>Travel stories and guides</p>
 </header>
 
 <div class="container">
 
 <section id="blog">
-
 <h2>Blog Articles</h2>
 
 <div class="search">
@@ -223,463 +90,228 @@ body.dark footer{background:#1e1e1e}
 
 <div id="posts" class="blog-grid"></div>
 
-<div id="pagination" class="pagination"></div>
+<div class="pagination" id="pagination"></div>
 
 </section>
 
-<div id="adminPanel" class="admin">
-
+<div class="admin" id="adminPanel">
 <h2>Admin Panel</h2>
-
 <form onsubmit="addPost(event)">
-
 <input id="postTitle" placeholder="Title" required>
 <input id="postCategory" placeholder="Category">
 <input id="postTags" placeholder="Tags comma separated">
 <input type="file" id="postImages" multiple>
-
+<div class="toolbar">
+<button type="button" onclick="format('bold')"><b>B</b></button>
+<button type="button" onclick="format('italic')"><i>I</i></button>
+<button type="button" onclick="format('insertUnorderedList')">• List</button>
+<button type="button" onclick="format('insertOrderedList')">1. List</button>
+<button type="button" onclick="format('formatBlock','h2')">H2</button>
+<button type="button" onclick="addLink()">Link</button>
+<button type="button" onclick="addImageFromURL()">Image URL</button>
+</div>
 <div id="editor" class="editor" contenteditable="true"></div>
-
+<div style="font-size:12px;color:#777">Tip: drag & drop images or hold Shift+drag to resize.</div>
 <button>Publish Post</button>
-
 </form>
-
 </div>
 
 </div>
 
-<footer>© 2026 5ratravels</footer>
+<footer>© 2026 TravelBlog</footer>
 
-<div id="postModal" class="post-modal">
-<div id="postContent" class="post-box"></div>
+<div class="post-modal" id="postModal">
+<div class="post-box" id="postContent"></div>
 </div>
 
-<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
 <img id="lightboxImg">
 </div>
 
+<div class="modal" id="loginModal">
+<div class="modal-box">
+<h3>Admin Login</h3>
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+</div>
+
 <script>
-
-let posts = JSON.parse(localStorage.getItem("posts")||"[]");
-let comments = JSON.parse(localStorage.getItem("comments")||"{}");
-
-let page=1;
-const perPage=6;
-
-let editingPostIndex=null;
-
-const isAdmin=localStorage.getItem("adminLogged")==="true";
+// --- Data & Storage ---
+let posts = JSON.parse(localStorage.getItem('posts')||'[]');
+let comments = JSON.parse(localStorage.getItem('comments')||'{}');
+let page = 1;
+const perPage = 6;
+const isAdmin = localStorage.getItem('adminLogged')==='true';
 
 if(posts.length===0){
-
 posts=[{
-id:Date.now(),
-title:"Weekend in Paris",
-category:"Europe",
-tags:["city","food"],
-images:["https://images.unsplash.com/photo-1502602898657-3e91760cbb34"],
-text:"Full guide to exploring Paris including cafes, museums and walking tours.",
+title:'Weekend in Paris',
+category:'Europe',
+tags:['city','food'],
+images:['https://images.unsplash.com/photo-1502602898657-3e91760cbb34'],
+text:'Full guide to exploring Paris including cafes, museums and walking tours around the Eiffel tower.',
 date:new Date().toLocaleDateString(),
 likes:0
 }];
-
 }
 
-if(isAdmin)document.getElementById("adminPanel").style.display="block";
+if(isAdmin) document.getElementById('adminPanel').style.display='block';
 
-function savePosts(){
-localStorage.setItem("posts",JSON.stringify(posts));
-}
+// --- Helpers ---
+function savePosts(){ localStorage.setItem('posts',JSON.stringify(posts)); }
+function saveComments(){ localStorage.setItem('comments',JSON.stringify(comments)); }
+function sanitizeHTML(str){ const div=document.createElement('div'); div.textContent=str; return div.innerHTML; }
 
-function saveComments(){
-localStorage.setItem("comments",JSON.stringify(comments));
-}
-
-function stripHTML(html){
-const div=document.createElement("div");
-div.innerHTML=html;
-return div.textContent||div.innerText||"";
-}
-
-function sanitizeHTML(str){
-const div=document.createElement("div");
-div.textContent=str;
-return div.innerHTML;
-}
-
+// --- Render Posts ---
 function renderPosts(list=posts){
-
 let start=(page-1)*perPage;
 let paginated=list.slice(start,start+perPage);
-
-const postsDiv=document.getElementById("posts");
-postsDiv.innerHTML="";
-
+const postsDiv=document.getElementById('posts');
+postsDiv.innerHTML='';
 paginated.forEach((p,i)=>{
+  const card=document.createElement('div');
+  card.className='card';
+  card.onclick=()=>openPost(start+i);
+  card.innerHTML=`<img src="${p.images[0]}"><div class="card-content"><h3>${sanitizeHTML(p.title)}</h3><div class="meta">${p.date} • ${sanitizeHTML(p.category||'')}</div><p>${sanitizeHTML(p.text.substring(0,80))}...</p><div class="tags">${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div></div>`;
+  
+  if(isAdmin){
+    const delBtn=document.createElement('button');
+    delBtn.textContent='Delete';
+    delBtn.style.cssText='margin-top:8px;padding:4px 8px;background:#e74c3c;color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px';
+    delBtn.onclick=(ev)=>{
+      ev.stopPropagation();
+      if(confirm('Are you sure you want to delete this post?')){
+        posts.splice(start+i,1);
+        savePosts();
+        renderPosts();
+      }
+    };
+    card.querySelector('.card-content').appendChild(delBtn);
+  }
 
-const card=document.createElement("div");
-card.className="card";
-
-card.onclick=()=>openPost(start+i);
-
-card.innerHTML=`
-<img src="${p.images[0]}">
-<div class="card-content">
-<h3>${sanitizeHTML(p.title)}</h3>
-<div class="meta">${p.date} • ${sanitizeHTML(p.category||"")}</div>
-<p>${sanitizeHTML(stripHTML(p.text).substring(0,80))}...</p>
-<div class="tags">${p.tags.map(t=>"#"+sanitizeHTML(t)).join(" ")}</div>
-</div>
-`;
-
-if(isAdmin){
-
-const editBtn=document.createElement("button");
-editBtn.textContent="Edit";
-editBtn.style="margin-top:8px;padding:4px 8px;background:#2d7ef7;color:white;border:none;border-radius:6px;font-size:12px";
-editBtn.onclick=(ev)=>{
-ev.stopPropagation();
-editPost(start+i);
-};
-
-const delBtn=document.createElement("button");
-delBtn.textContent="Delete";
-delBtn.style="margin-left:6px;padding:4px 8px;background:#e74c3c;color:white;border:none;border-radius:6px;font-size:12px";
-
-delBtn.onclick=(ev)=>{
-ev.stopPropagation();
-
-if(confirm("Delete post?")){
-posts.splice(start+i,1);
-savePosts();
-renderPosts();
-}
-};
-
-card.querySelector(".card-content").appendChild(editBtn);
-card.querySelector(".card-content").appendChild(delBtn);
-
-}
-
-postsDiv.appendChild(card);
-
+  postsDiv.appendChild(card);
 });
-
 renderPagination(list.length);
-
-}
-
-function renderPagination(total){
-
-const pagination=document.getElementById("pagination");
-pagination.innerHTML="";
-
-const pages=Math.ceil(total/perPage);
-
-for(let i=1;i<=pages;i++){
-
-const btn=document.createElement("button");
-
-btn.textContent=i;
-
-btn.onclick=()=>{
-page=i;
-renderPosts();
-};
-
-pagination.appendChild(btn);
-
-}
-
-}
-
-function renderTagFilters(){
-
-const tags=[...new Set(posts.flatMap(p=>p.tags))];
-
-const box=document.getElementById("tagFilters");
-box.innerHTML="";
-
-tags.forEach(tag=>{
-
-const b=document.createElement("button");
-b.textContent="#"+tag;
-
-b.onclick=()=>{
-page=1;
-renderPosts(posts.filter(p=>p.tags.includes(tag)));
-};
-
-box.appendChild(b);
-
-});
-
-}
-
-function openPost(i){
-
-const p=posts[i];
-
-const gallery=p.images.map(img=>`<img src="${img}" onclick="openLightbox('${img}')">`).join("");
-
-const postComments=(comments[p.id]||[]).map((c,ci)=>{
-
-const del=isAdmin?`<button onclick="deleteComment('${p.id}',${ci})" style="margin-left:6px;background:#e74c3c;color:white;border:none;border-radius:6px;padding:2px 6px;font-size:11px">Delete</button>`:"";
-
-return `<div class='comment'>${sanitizeHTML(c)} ${del}</div>`;
-
-}).join("");
-
-document.getElementById("postContent").innerHTML=`
-
-<h1>${sanitizeHTML(p.title)}</h1>
-
-<div class="meta">${p.date} • ${sanitizeHTML(p.category||"")}</div>
-
-<img src="${p.images[0]}" style="width:100%;border-radius:10px;margin:20px 0">
-
-<p>${p.text}</p>
-
-<div class="gallery">${gallery}</div>
-
-<div class="tags">${p.tags.map(t=>"#"+sanitizeHTML(t)).join(" ")}</div>
-
-<div class="post-comments">
-
-<h3>Comments</h3>
-
-<form onsubmit="addComment(event,'${p.id}')">
-<input id="cname" placeholder="Name" required>
-<input id="ctext" placeholder="Comment" required>
-<button>Add comment</button>
-</form>
-
-${postComments}
-
-</div>
-
-<button onclick="closePost()">Close</button>
-
-`;
-
-document.getElementById("postModal").style.display="block";
-
-}
-
-function closePost(){
-document.getElementById("postModal").style.display="none";
-}
-
-function addComment(e,id){
-
-e.preventDefault();
-
-const name=sanitizeHTML(document.getElementById("cname").value);
-const text=sanitizeHTML(document.getElementById("ctext").value);
-
-if(!comments[id])comments[id]=[];
-
-comments[id].push(name+": "+text);
-
-saveComments();
-
-openPost(posts.findIndex(p=>p.id==id));
-
-}
-
-function deleteComment(postId,index){
-
-if(!confirm("Delete comment?"))return;
-
-comments[postId].splice(index,1);
-
-saveComments();
-
-openPost(posts.findIndex(p=>p.id==postId));
-
-}
-
-function editPost(i){
-
-const p=posts[i];
-
-editingPostIndex=i;
-
-document.getElementById("postTitle").value=p.title;
-document.getElementById("postCategory").value=p.category;
-document.getElementById("postTags").value=p.tags.join(",");
-document.getElementById("editor").innerHTML=p.text;
-
-window.scrollTo({top:document.getElementById("adminPanel").offsetTop,behavior:"smooth"});
-
-}
-
-async function compressImage(file,maxWidth=1200,quality=.7){
-
-return new Promise(resolve=>{
-
-const img=new Image();
-const reader=new FileReader();
-
-reader.onload=e=>img.src=e.target.result;
-
-img.onload=()=>{
-
-let w=img.width;
-let h=img.height;
-
-if(w>maxWidth){
-h=h*(maxWidth/w);
-w=maxWidth;
-}
-
-const canvas=document.createElement("canvas");
-
-canvas.width=w;
-canvas.height=h;
-
-const ctx=canvas.getContext("2d");
-
-ctx.drawImage(img,0,0,w,h);
-
-resolve(canvas.toDataURL("image/jpeg",quality));
-
-};
-
-reader.readAsDataURL(file);
-
-});
-
-}
-
-async function addPost(e){
-
-e.preventDefault();
-
-const title=document.getElementById("postTitle").value;
-const category=document.getElementById("postCategory").value;
-const tags=document.getElementById("postTags").value.split(",").map(t=>t.trim()).filter(Boolean);
-const text=document.getElementById("editor").innerHTML;
-
-const files=document.getElementById("postImages").files;
-
-const images=[];
-
-for(const file of files){
-
-if(file.type.startsWith("image/")){
-
-const img=await compressImage(file);
-
-images.push(img);
-
-}
-
-}
-
-const newPost={
-id:Date.now(),
-title,
-category,
-tags,
-text,
-images:images.length?images:["https://images.unsplash.com/photo-1502602898657-3e91760cbb34"],
-date:new Date().toLocaleDateString(),
-likes:0
-};
-
-if(editingPostIndex!==null){
-
-posts[editingPostIndex]={...posts[editingPostIndex],...newPost};
-
-editingPostIndex=null;
-
-}else{
-
-posts.unshift(newPost);
-
-}
-
-savePosts();
-
-renderPosts();
-
-e.target.reset();
-document.getElementById("editor").innerHTML="";
-
-}
-
-function searchPosts(q){
-
-q=q.toLowerCase();
-
-renderPosts(posts.filter(p=>
-p.title.toLowerCase().includes(q) ||
-p.tags.join(" ").toLowerCase().includes(q)
-));
-
-}
-
-function openLightbox(src){
-
-const lb=document.getElementById("lightbox");
-
-lb.style.display="flex";
-
-document.getElementById("lightboxImg").src=src;
-
-}
-
-function closeLightbox(){
-document.getElementById("lightbox").style.display="none";
-}
-
-function toggleMenu(){
-document.getElementById("menu").classList.toggle("open");
-}
-
-function scrollToId(id){
-document.getElementById(id).scrollIntoView({behavior:"smooth"});
-}
-
-function toggleDark(){
-
-document.body.classList.toggle("dark");
-
-localStorage.setItem("darkMode",document.body.classList.contains("dark"));
-
-}
-
-if(localStorage.getItem("darkMode")==="true")document.body.classList.add("dark");
-
-function openLogin(){
-
-const u=prompt("Admin username:");
-const p=prompt("Password:");
-
-if(u==="admin" && p==="travel123"){
-
-localStorage.setItem("adminLogged","true");
-location.reload();
-
-}else{
-
-alert("Wrong login");
-
-}
-
-}
-
-function logout(){
-
-localStorage.removeItem("adminLogged");
-location.reload();
-
-}
-
-renderPosts();
 renderTagFilters();
+}
 
+// --- Pagination ---
+function renderPagination(total){
+const pagination=document.getElementById('pagination');
+pagination.innerHTML='';
+const totalPages=Math.ceil(total/perPage);
+for(let i=1;i<=totalPages;i++){
+  const btn=document.createElement('button');
+  btn.textContent=i;
+  if(i===page) btn.style.background='#1a5cd1';
+  btn.onclick=()=>{ page=i; renderPosts(); };
+  pagination.appendChild(btn);
+}
+}
+
+// --- Tag Filters ---
+function renderTagFilters(){
+const allTags=[...new Set(posts.flatMap(p=>p.tags))];
+const box=document.getElementById('tagFilters');
+box.innerHTML='';
+allTags.forEach(tag=>{
+  const b=document.createElement('button');
+  b.textContent='#'+tag;
+  b.onclick=()=>{ page=1; renderPosts(posts.filter(p=>p.tags.includes(tag))); };
+  box.appendChild(b);
+});
+}
+
+// --- Post Modal ---
+function openPost(i){
+const p=posts[i];
+const gallery=p.images.map(img=>`<img src="${img}" onclick="openLightbox('${img}')">`).join('');
+const postComments=(comments[i]||[]).map(c=>`<div class='comment'>${sanitizeHTML(c)}</div>`).join('');
+document.getElementById('postContent').innerHTML=`<h1>${sanitizeHTML(p.title)}</h1><div class='meta'>${p.date} • ${sanitizeHTML(p.category||'')}</div><img src='${p.images[0]}' style='width:100%;border-radius:10px;margin:20px 0'><p>${p.text}</p><div class='gallery'>${gallery}</div><div class='tags'>${p.tags.map(t=>'#'+sanitizeHTML(t)).join(' ')}</div><div class='post-comments'><h3>Comments</h3><form onsubmit="addComment(event,${i})"><input id='cname' placeholder='Name' required><input id='ctext' placeholder='Comment' required><button>Add comment</button></form>${postComments}</div><button onclick="closePost()">Close</button>`;
+document.getElementById('postModal').style.display='block';
+}
+
+// --- Comments ---
+function addComment(e,i){ e.preventDefault(); const name=document.getElementById('cname').value; const text=document.getElementById('ctext').value; if(!comments[i]) comments[i]=[]; comments[i].push(`${name}: ${text}`); saveComments(); openPost(i); }
+function closePost(){ document.getElementById('postModal').style.display='none'; }
+
+// --- Lightbox ---
+function openLightbox(src){ const lb=document.getElementById('lightbox'); lb.style.display='flex'; document.getElementById('lightboxImg').src=src; }
+function closeLightbox(){ document.getElementById('lightbox').style.display='none'; }
+
+// --- Editor Toolbar & Add Post ---
+const editor=document.getElementById('editor');
+function format(cmd,value=null){ document.execCommand(cmd,false,value); }
+function addLink(){ const url=prompt('Enter URL'); if(url) document.execCommand('createLink',false,url); }
+function addImageFromURL(){ const url=prompt('Enter image URL'); if(!url) return; const img=document.createElement('img'); img.src=url; makeImageInteractive(img); editor.appendChild(img); }
+
+function makeImageInteractive(img){
+img.style.maxWidth='100%'; img.style.borderRadius='10px'; img.style.margin='10px 0'; img.style.cursor='move'; img.draggable=true;
+img.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/plain','drag-image'); window.__draggedImage=img; });
+img.addEventListener('dragover',e=>e.preventDefault());
+img.addEventListener('drop',e=>{ e.preventDefault(); const dragged=window.__draggedImage; if(dragged&&dragged!==img) img.parentNode.insertBefore(dragged,img); });
+img.addEventListener('mousedown',e=>{ if(!e.shiftKey) return; e.preventDefault(); const startX=e.clientX,startY=e.clientY,startWidth=img.offsetWidth,startHeight=img.offsetHeight; function onMove(ev){ const dx=ev.clientX-startX,dy=ev.clientY-startY; img.style.width=Math.max(50,startWidth+dx)+'px'; img.style.height=Math.max(50,startHeight+dy)+'px'; } function onUp(){ window.removeEventListener('mousemove',onMove); window.removeEventListener('mouseup',onUp); } window.addEventListener('mousemove',onMove); window.addEventListener('mouseup',onUp); });
+}
+
+// Drag & Drop in Editor
+editor.addEventListener('dragover',e=>e.preventDefault());
+editor.addEventListener('drop',e=>{
+e.preventDefault();
+const files=e.dataTransfer.files;
+for(const file of files){
+if(!file.type.startsWith('image/')) continue;
+const reader=new FileReader();
+reader.onload=evt=>{ const img=document.createElement('img'); img.src=evt.target.result; makeImageInteractive(img); editor.appendChild(img); };
+reader.readAsDataURL(file);
+}
+});
+
+// --- Add Post ---
+function addPost(e){
+e.preventDefault();
+const title=document.getElementById('postTitle').value;
+const category=document.getElementById('postCategory').value;
+const tags=document.getElementById('postTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+const text=editor.innerHTML;
+const files=document.getElementById('postImages').files;
+const images=[];
+if(files.length===0) saveNewPost();
+for(const file of files){
+if(!file.type.startsWith('image/')) continue;
+const reader=new FileReader();
+reader.onload=()=>{
+images.push(reader.result);
+if(images.length===files.length) saveNewPost();
+};
+reader.readAsDataURL(file);
+}
+function saveNewPost(){ posts.unshift({title,category,tags,text,images,date:new Date().toLocaleDateString(),likes:0}); savePosts(); renderPosts(); e.target.reset(); editor.innerHTML=''; }
+}
+
+// --- Search ---
+function searchPosts(q){ q=q.toLowerCase(); renderPosts(posts.filter(p=>p.title.toLowerCase().includes(q)||p.tags.join(' ').toLowerCase().includes(q))); }
+
+// --- Dark Mode ---
+function toggleDark(){ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); }
+if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark');
+
+// --- Admin Login ---
+function openLogin(){ document.getElementById('loginModal').style.display='flex'; }
+function login(){ if(document.getElementById('username').value==='admin' && document.getElementById('password').value==='travel123'){ localStorage.setItem('adminLogged','true'); location.reload(); }else alert('Wrong login'); }
+function logout(){ localStorage.removeItem('adminLogged'); location.reload(); }
+
+// --- Navigation & Menu ---
+function toggleMenu(){ document.getElementById('menu').classList.toggle('open'); }
+function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// --- Initial Render ---
+renderPosts();
+window.onclick=e=>{
+if(e.target===document.getElementById('loginModal')) document.getElementById('loginModal').style.display='none';
+if(e.target===document.getElementById('postModal')) document.getElementById('postModal').style.display='none';
+};
 </script>
 
 </body>
